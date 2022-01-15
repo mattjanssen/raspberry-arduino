@@ -18,8 +18,11 @@ struct PayloadStruct {
 };
 PayloadStruct payload = { counter: 123 };
 
+
+
 void setup() {
-//  Serial.begin(9600);
+  Serial.begin(9600);
+  Serial.print("Starting...");
   analogReference(EXTERNAL); // set the analog reference to 3.3V
   
   radio.begin();
