@@ -1,1 +1,4 @@
 /rf24libs/
+__pycache__/
+.vscode
+

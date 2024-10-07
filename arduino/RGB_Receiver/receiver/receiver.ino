@@ -21,7 +21,7 @@ RF24 radio(9, 10); // CE, CSN
 #define CHIPSET WS2812B
 #define COLOR_ORDER GRB
 #define NUM_LEDS 10
-#define BRIGHTNESS 96
+#define BRIGHTNESS 255 // Up to 255
 
 CRGB leds[NUM_LEDS];
 
@@ -66,7 +66,56 @@ void setup() {
 unsigned int wait = 0;
 bool sleep = false;
 
+
+  CRGB orange = CRGB(255, 50, 0);
+  CRGB darkdarkred = CRGB(50, 0, 0);
+  CRGB darkdarkpurple = CRGB(60, 0, 30);
+  CRGB yellow = CRGB(255, 255, 0);
+
+CRGBPalette16 currentPalette = CRGBPalette16(
+    CRGB::Black,
+    CRGB::Maroon,
+    darkdarkred,
+    CRGB::Maroon,
+ 
+    CRGB::DarkRed,
+    darkdarkred,
+    darkdarkpurple,
+    CRGB::DarkRed,
+ 
+    darkdarkred,
+    CRGB::DarkRed,
+    CRGB::Red,
+    darkdarkred,
+ 
+    CRGB::Red,
+    orange,
+    CRGB::Red,
+    CRGB::DarkRed
+);
+
+int foo = 0;
+
+void fillnoise8() {
+ 
+  #define scale 30                                                          // Don't change this programmatically or everything shakes.
+  #define speedDivisor 50
+  
+  for(int i = 0; i < NUM_LEDS; i++) {                                       // Just ONE loop to fill up the LED array as all of the pixels change.
+    uint8_t index = inoise8(i*scale, millis()/speedDivisor+i*scale);                   // Get a value from the noise function. I'm using both x and y axis.
+    leds[i] = ColorFromPalette(currentPalette, index, BRIGHTNESS, LINEARBLEND);    // With that value, look up the 8 bit colour palette value and assign it to the current LED.
+  }
+ 
+} // fillnoise8()
+
 void loop() {
+  EVERY_N_MILLIS(10) {
+    foo++;
+  }
+  fillnoise8();  
+  LEDS.show();     
+  return;
+
   radio.startListening();
   uint8_t pipe;
   if (radio.available(&pipe)) {
